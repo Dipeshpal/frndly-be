@@ -1,0 +1,21 @@
+services:
+  frndly-v3-postgres:
+    image: pgvector/pgvector:pg15
+    container_name: frndly_v3_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: frndly
+      POSTGRES_PASSWORD: frndly
+      POSTGRES_DB: frndly
+    ports:
+      - "5439:5432"
+    volumes:
+      - postgres_data_frndly:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U frndly"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data_frndly:

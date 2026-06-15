@@ -1,0 +1,5 @@
+[allowlist]
+description = "Allowlist for false positives in lock files"
+paths = [
+  "uv.lock",
+]
