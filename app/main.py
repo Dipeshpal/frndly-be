@@ -1,13 +1,30 @@
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy import text
 
 from app.api.v1.router import api_router
 from app.core.config import settings
+from app.db.base import Base
+from app.db.session import engine
+import app.models  # noqa: F401 — ensure all models are registered
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    async with engine.begin() as conn:
+        await conn.execute(text(f'CREATE SCHEMA IF NOT EXISTS "{settings.DB_SCHEMA}"'))
+        await conn.execute(text(f'SET search_path TO "{settings.DB_SCHEMA}"'))
+        await conn.run_sync(Base.metadata.create_all)
+    yield
+
 
 app = FastAPI(
     title="Frndly API",
     description="Cross-device clipboard and secret vault",
     version="1.0.0",
+    lifespan=lifespan,
 )
 
 app.add_middleware(

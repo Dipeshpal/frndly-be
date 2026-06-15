@@ -3,7 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.deps import get_current_user
 from app.db.session import get_db
-from app.schemas.clipboard import ClipboardItemResponse, ClipboardListResponse, CreateClipboardRequest
+from app.schemas.clipboard import ClipboardItemResponse, ClipboardListResponse, CreateClipboardRequest, DeviceResponse
 from app.services import clipboard_service
 
 router = APIRouter(prefix="/clipboard", tags=["clipboard"])
@@ -36,3 +36,11 @@ async def delete_clipboard(
     current_user=Depends(get_current_user),
 ):
     await clipboard_service.delete_clipboard(db, current_user.id, item_id)
+
+
+@router.get("/devices", response_model=list[DeviceResponse])
+async def list_devices(
+    db: AsyncSession = Depends(get_db),
+    current_user=Depends(get_current_user),
+):
+    return await clipboard_service.list_devices(db, current_user.id)

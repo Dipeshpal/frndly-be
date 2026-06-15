@@ -37,3 +37,16 @@ async def delete_clipboard(db: AsyncSession, user_id: str, item_id: str) -> None
     deleted = await repo.delete(user_id, item_id)
     if not deleted:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Item not found")
+
+async def list_devices(db: AsyncSession, user_id: str):
+    from app.schemas.clipboard import DeviceResponse
+    repo = ClipboardRepository(db)
+    devices = await repo.list_devices(user_id)
+    return [
+        DeviceResponse(
+            device_name=name,
+            last_active=last_active,
+            is_current_session=(i == 0) # Assumes the most recent one is the current session for this quick implementation
+        )
+        for i, (name, last_active) in enumerate(devices)
+    ]

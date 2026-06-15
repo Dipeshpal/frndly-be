@@ -20,3 +20,9 @@ class ClipboardListResponse(BaseModel):
     total: int
     page: int
     per_page: int
+
+class DeviceResponse(BaseModel):
+    device_name: str
+    last_active: str
+    is_current_session: bool = False
+

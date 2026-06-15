@@ -42,3 +42,13 @@ class ClipboardRepository:
         await self.db.delete(item)
         await self.db.commit()
         return True
+
+    async def list_devices(self, user_id: str) -> "list[tuple[str, str]]":
+        q = (
+            select(ClipboardItem.device_name, func.max(ClipboardItem.created_at))
+            .where(ClipboardItem.user_id == user_id)
+            .group_by(ClipboardItem.device_name)
+            .order_by(func.max(ClipboardItem.created_at).desc())
+        )
+        result = await self.db.execute(q)
+        return [(row[0], row[1].isoformat()) for row in result.all()]

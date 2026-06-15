@@ -16,3 +16,4 @@ class User(Base, TimestampMixin):
 
     clipboard_items = relationship("ClipboardItem", back_populates="user", cascade="all, delete-orphan")
     secrets = relationship("Secret", back_populates="user", cascade="all, delete-orphan")
+    alerts = relationship("Alert", back_populates="user", cascade="all, delete-orphan")
