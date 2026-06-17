@@ -1,3 +1,4 @@
+import os
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
@@ -13,10 +14,15 @@ import app.models  # noqa: F401 — ensure all models are registered
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    async with engine.begin() as conn:
-        await conn.execute(text(f'CREATE SCHEMA IF NOT EXISTS "{settings.DB_SCHEMA}"'))
-        await conn.execute(text(f'SET search_path TO "{settings.DB_SCHEMA}"'))
-        await conn.run_sync(Base.metadata.create_all)
+    # Only run startup for local development, not serverless
+    if os.getenv("VERCEL") is None:
+        try:
+            async with engine.begin() as conn:
+                await conn.execute(text(f'CREATE SCHEMA IF NOT EXISTS "{settings.DB_SCHEMA}"'))
+                await conn.execute(text(f'SET search_path TO "{settings.DB_SCHEMA}"'))
+                await conn.run_sync(Base.metadata.create_all)
+        except Exception as e:
+            print(f"Warning: Could not initialize database: {e}")
     yield
 
 
