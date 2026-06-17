@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from app.api.v1 import auth, clipboard, users, vault, dashboard, alerts, notes, folders
+from app.api.v1 import auth, clipboard, users, vault, dashboard, alerts, notes, folders, devices
 
 api_router = APIRouter(prefix="/api/v1")
 api_router.include_router(auth.router)
@@ -11,3 +11,4 @@ api_router.include_router(dashboard.router)
 api_router.include_router(alerts.router)
 api_router.include_router(notes.router)
 api_router.include_router(folders.router)
+api_router.include_router(devices.router)

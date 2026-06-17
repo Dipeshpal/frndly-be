@@ -19,3 +19,4 @@ class User(Base, TimestampMixin):
     alerts = relationship("Alert", back_populates="user", cascade="all, delete-orphan")
     notes = relationship("Note", back_populates="user", cascade="all, delete-orphan")
     folders = relationship("Folder", back_populates="user", cascade="all, delete-orphan")
+    devices = relationship("Device", back_populates="user", cascade="all, delete-orphan")
