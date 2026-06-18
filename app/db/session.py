@@ -4,8 +4,18 @@ from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_asyn
 
 from app.core.config import settings
 
+
+def _get_async_database_url(url: str) -> str:
+    if "+asyncpg" in url:
+        return url
+    url = url.replace("+psycopg2", "+asyncpg")
+    if not "+" in url.split("://")[1]:
+        url = url.replace("postgresql://", "postgresql+asyncpg://")
+    return url
+
+
 engine = create_async_engine(
-    settings.DATABASE_URL,
+    _get_async_database_url(settings.DATABASE_URL),
     echo=False,
     pool_pre_ping=True,
     connect_args={"server_settings": {"search_path": settings.DB_SCHEMA}},
