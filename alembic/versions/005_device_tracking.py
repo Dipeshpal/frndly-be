@@ -7,6 +7,7 @@ Create Date: 2026-06-17 00:00:00.000000
 """
 from alembic import op
 import sqlalchemy as sa
+from sqlalchemy.dialects.postgresql import UUID
 
 
 # revision identifiers, used by Alembic.
@@ -19,8 +20,8 @@ depends_on: str | None = None
 def upgrade() -> None:
     op.create_table(
         "devices",
-        sa.Column("id", sa.String(36), primary_key=True),
-        sa.Column("user_id", sa.String(36), sa.ForeignKey("users.id"), nullable=False),
+        sa.Column("id", UUID(as_uuid=True), primary_key=True),
+        sa.Column("user_id", UUID(as_uuid=True), sa.ForeignKey("users.id", ondelete="CASCADE"), nullable=False),
         sa.Column("device_id", sa.String(36), unique=True, nullable=False),
         sa.Column("name", sa.String(255), nullable=False),
         sa.Column("os_type", sa.String(50), nullable=False),
