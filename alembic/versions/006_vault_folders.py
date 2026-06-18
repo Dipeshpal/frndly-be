@@ -21,17 +21,19 @@ def upgrade() -> None:
     # Check if secrets table exists before adding column
     conn = op.get_bind()
     inspector = sa.inspect(conn)
-    if 'secrets' in inspector.get_table_names():
+    schema = "frndly_schema"
+    if 'secrets' in inspector.get_table_names(schema=schema):
         # Check if folder column already exists
-        columns = [col['name'] for col in inspector.get_columns('secrets')]
+        columns = [col['name'] for col in inspector.get_columns('secrets', schema=schema)]
         if 'folder' not in columns:
-            op.add_column("secrets", sa.Column("folder", sa.String(100), nullable=False, server_default="General"))
+            op.add_column("secrets", sa.Column("folder", sa.String(100), nullable=False, server_default="General"), schema=schema)
 
 
 def downgrade() -> None:
     conn = op.get_bind()
     inspector = sa.inspect(conn)
-    if 'secrets' in inspector.get_table_names():
-        columns = [col['name'] for col in inspector.get_columns('secrets')]
+    schema = "frndly_schema"
+    if 'secrets' in inspector.get_table_names(schema=schema):
+        columns = [col['name'] for col in inspector.get_columns('secrets', schema=schema)]
         if 'folder' in columns:
-            op.drop_column("secrets", "folder")
+            op.drop_column("secrets", "folder", schema=schema)
