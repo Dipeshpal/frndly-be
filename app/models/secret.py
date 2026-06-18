@@ -15,5 +15,6 @@ class Secret(Base, TimestampMixin):
     value: Mapped[str] = mapped_column(Text, nullable=False)  # Fernet-encrypted
     description: Mapped[str | None] = mapped_column(Text, nullable=True)
     category: Mapped[str] = mapped_column(String(50), default="other", nullable=False)
+    folder: Mapped[str] = mapped_column(String(100), default="General", nullable=False)
 
     user = relationship("User", back_populates="secrets")

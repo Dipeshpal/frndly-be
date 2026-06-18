@@ -10,12 +10,14 @@ class CreateSecretRequest(BaseModel):
     value: str
     description: str | None = None
     category: SecretCategory = "other"
+    folder: str = "General"
 
 
 class UpdateSecretRequest(BaseModel):
     name: str | None = None
     description: str | None = None
     category: SecretCategory | None = None
+    folder: str | None = None
 
 
 class SecretResponse(BaseModel):
@@ -24,7 +26,19 @@ class SecretResponse(BaseModel):
     value: str
     description: str | None
     category: str
+    folder: str
     created_at: str
     updated_at: str
 
     model_config = {"from_attributes": True}
+
+
+class FolderInfo(BaseModel):
+    name: str
+    count: int
+
+
+class SecretPreview(BaseModel):
+    id: str
+    name: str
+    category: str

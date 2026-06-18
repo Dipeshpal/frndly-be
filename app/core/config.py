@@ -10,6 +10,7 @@ class Settings(BaseSettings):
     JWT_ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 1440
     ALLOWED_ORIGINS: str = "http://localhost:8081"
+    VAULT_ENCRYPTION_KEY: str = ""  # Fernet key; auto-derived from JWT_SECRET_KEY if not set
 
     @property
     def origins(self) -> list[str]:
