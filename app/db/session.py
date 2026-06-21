@@ -18,7 +18,7 @@ engine = create_async_engine(
     _get_async_database_url(settings.DATABASE_URL),
     echo=False,
     pool_pre_ping=True,
-    connect_args={"server_settings": {"search_path": settings.DB_SCHEMA}},
+    connect_args={"server_settings": {"search_path": settings.DB_SCHEMA}, "statement_cache_size": 0},
     execution_options={"schema_translate_map": {None: settings.DB_SCHEMA}},
 )
 AsyncSessionLocal = async_sessionmaker(engine, expire_on_commit=False)
