@@ -45,3 +45,7 @@ class AuthResponse(BaseModel):
 class UpdateProfileRequest(BaseModel):
     name: str | None = None
     email: EmailStr | None = None
+
+
+class GoogleLoginRequest(BaseModel):
+    id_token: str

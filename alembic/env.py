@@ -33,7 +33,10 @@ def do_run_migrations(connection):
 
 
 async def run_async_migrations() -> None:
-    engine = create_async_engine(settings.DATABASE_URL)
+    engine = create_async_engine(
+        settings.DATABASE_URL,
+        connect_args={"server_settings": {"search_path": settings.DB_SCHEMA}, "statement_cache_size": 0},
+    )
     async with engine.begin() as conn:
         await conn.run_sync(do_run_migrations)
     await engine.dispose()

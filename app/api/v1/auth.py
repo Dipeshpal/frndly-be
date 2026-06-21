@@ -3,7 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.deps import get_current_user
 from app.db.session import get_db
-from app.schemas.auth import AuthResponse, LoginRequest, SignupRequest, UpdateProfileRequest, UserResponse
+from app.schemas.auth import AuthResponse, GoogleLoginRequest, LoginRequest, SignupRequest, UpdateProfileRequest, UserResponse
 from app.services import auth_service
 from app.repositories.user_repo import UserRepository
 
@@ -18,6 +18,11 @@ async def signup(data: SignupRequest, db: AsyncSession = Depends(get_db)):
 @router.post("/login", response_model=AuthResponse)
 async def login(data: LoginRequest, db: AsyncSession = Depends(get_db)):
     return await auth_service.login(db, data)
+
+
+@router.post("/google", response_model=AuthResponse)
+async def google_login(data: GoogleLoginRequest, db: AsyncSession = Depends(get_db)):
+    return await auth_service.google_login(db, data)
 
 
 @router.get("/me", response_model=UserResponse)

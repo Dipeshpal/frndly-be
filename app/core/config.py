@@ -13,6 +13,7 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 1440
     ALLOWED_ORIGINS: str = "http://localhost:8081"
     VAULT_ENCRYPTION_KEY: str = ""
+    GOOGLE_CLIENT_ID: str = ""
 
     def __init__(self, **data):
         super().__init__(**data)
