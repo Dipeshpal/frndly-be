@@ -25,11 +25,21 @@ async def _ensure_database_exists():
 
     try:
         maint_engine = create_async_engine(maintenance_url, echo=False)
-        async with maint_engine.begin() as conn:
-            await conn.execute(text(f'CREATE DATABASE IF NOT EXISTS "{db_name}"'))
+        async with maint_engine.connect() as conn:
+            # Check if database exists in pg_database catalog
+            res = await conn.execute(
+                text("SELECT 1 FROM pg_database WHERE datname = :dbname"),
+                {"dbname": db_name}
+            )
+            exists = res.scalar()
+            if not exists:
+                # execution_options AUTOCOMMIT is required to run CREATE DATABASE outside a transaction block
+                conn_autocommit = await conn.execution_options(isolation_level="AUTOCOMMIT")
+                await conn_autocommit.execute(text(f'CREATE DATABASE "{db_name}"'))
         await maint_engine.dispose()
     except Exception as e:
         print(f"Warning: Could not create database: {e}")
+
 
 
 @asynccontextmanager

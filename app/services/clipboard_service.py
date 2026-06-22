@@ -18,10 +18,10 @@ def _fmt(item: object) -> ClipboardItemResponse:
 
 
 async def list_clipboard(
-    db: AsyncSession, user_id: str, page: int, per_page: int, search: str | None
+    db: AsyncSession, user_id: str, page: int, per_page: int, search: str | None, date: str | None = None
 ) -> ClipboardListResponse:
     repo = ClipboardRepository(db)
-    items, total = await repo.list(user_id, page, per_page, search)
+    items, total = await repo.list(user_id, page, per_page, search, date)
     return ClipboardListResponse(items=[_fmt(i) for i in items], total=total, page=page, per_page=per_page)
 
 

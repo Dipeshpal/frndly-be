@@ -9,11 +9,19 @@ class ClipboardRepository:
         self.db = db
 
     async def list(
-        self, user_id: str, page: int = 1, per_page: int = 50, search: str | None = None
+        self, user_id: str, page: int = 1, per_page: int = 50, search: str | None = None, date: str | None = None
     ) -> tuple[list[ClipboardItem], int]:
         q = select(ClipboardItem).where(ClipboardItem.user_id == user_id)
         if search:
             q = q.where(ClipboardItem.content.ilike(f"%{search}%"))
+        if date:
+            from datetime import datetime
+            from sqlalchemy import cast, Date
+            try:
+                parsed_date = datetime.strptime(date, "%Y-%m-%d").date()
+                q = q.where(cast(ClipboardItem.created_at, Date) == parsed_date)
+            except ValueError:
+                pass
         count_q = select(func.count()).select_from(q.subquery())
         total = (await self.db.execute(count_q)).scalar_one()
         items = (

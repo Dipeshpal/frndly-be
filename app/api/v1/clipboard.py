@@ -14,10 +14,11 @@ async def list_clipboard(
     page: int = Query(1, ge=1),
     per_page: int = Query(50, ge=1, le=100),
     search: str | None = Query(None),
+    date: str | None = Query(None),
     db: AsyncSession = Depends(get_db),
     current_user=Depends(get_current_user),
 ):
-    return await clipboard_service.list_clipboard(db, current_user.id, page, per_page, search)
+    return await clipboard_service.list_clipboard(db, current_user.id, page, per_page, search, date)
 
 
 @router.post("", response_model=ClipboardItemResponse, status_code=201)
